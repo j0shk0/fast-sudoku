@@ -11,15 +11,18 @@
 
 class Sudoku {
 
-    std::array<std::array<int, 9>, 9> board_{};
-
-    [[nodiscard]] bool checkRow(const size_t &row, const size_t &col) const;
+    [[nodiscard]] bool checkRow(const size_t &row, const size_t &col);
 
     [[nodiscard]] bool checkColumn(const size_t &row, const size_t &col) const;
 
     [[nodiscard]] bool checkBox(const size_t &row, const size_t &col) const;
 
 public:
+
+    int board_[81]{};
+
+    bool rowState_[9]{};
+
     static bool check(const std::string &potentialSolution);
 
     void generate();

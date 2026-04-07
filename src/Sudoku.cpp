@@ -14,32 +14,33 @@
 
 void Sudoku::generate() {
     std::set<int> backtracked_values{};
-    for (int i = 0; i < board_.size(); i++) {
-        for (int j = 0; j < board_[0].size(); j++) {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
             // Determine possible candidates for the current cell.
             int possible_values[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
             std::vector<int> candidates;
+            candidates.reserve(9);
             std::ranges::copy_if(possible_values, std::back_inserter(candidates),
                                  [this, &i, &j, &backtracked_values](const int v) {
-                                     board_[i][j] = v;
-                                     return checkRow(i, j) && checkColumn(i, j) &&
-                                            checkBox(i, j) && !backtracked_values.contains(v);
+                                     board_[(i * 9) + j] = v;
+                                     const auto result = checkRow(i, j) && checkColumn(i, j) &&
+                                                         checkBox(i, j) && !backtracked_values.contains(v);
+                                     return result;
                                  });
-            board_[i][j] = 0;
+            board_[(i * 9) + j] = 0;
             // Add backtracking logic.
             if (candidates.empty()) {
                 if (j != 0) {
-                    backtracked_values.insert(board_[i][--j]);
-                    board_[i][j--] = 0;
+                    backtracked_values.insert(board_[(i * 9) + --j]);
+                    board_[(i * 9) + j--] = 0;
                 } else {
                     j = 8;
-                    backtracked_values.insert(board_[--i][j]);
-                    board_[i][j--] = 0;
+                    backtracked_values.insert(board_[(--i * 9) + j]);
+                    board_[(i * 9) + j--] = 0;
                 }
                 if (backtracked_values.size() == 9) {
-                    for (auto & k : board_) {
-                        std::ranges::fill(k, 0);
-                    }
+                    std::ranges::fill(board_, 0);
+                    std::ranges::fill(rowState_, false);
                     i = -1;
                     j = 0;
                     backtracked_values.clear();
@@ -52,18 +53,22 @@ void Sudoku::generate() {
             const auto r = dist(rng);
             auto it = std::begin(candidates);
             std::advance(it, r);
-            board_[i][j] = *it;
+            board_[(i * 9) + j] = *it;
+            rowState_[board_[(i * 9) + j] - 1] = true;
         }
     }
 }
 
-bool Sudoku::checkRow(const size_t &row, const size_t &col) const {
-    bool row_check[9]{};
-    for (size_t i = 0; i < col + 1; i++) {
-        if (board_[row][i] == 0) continue;
-        row_check[board_[row][i] - 1] = true;
+bool Sudoku::checkRow(const size_t &row, const size_t &col) {
+    if (col == 0) {
+        std::ranges::fill(rowState_, false);
+        return true;
     }
-    return std::accumulate(std::begin(row_check), std::end(row_check), 0) == col + 1;
+    const bool existing_value = rowState_[board_[(row * 9) + col] - 1];
+    rowState_[board_[(row * 9) + col] - 1] = true;
+    const auto unique_vals = std::accumulate(std::begin(rowState_), std::end(rowState_), 0);
+    rowState_[board_[(row * 9) + col] - 1] = existing_value ? existing_value : false;
+    return unique_vals == col + 1;
 }
 
 bool Sudoku::checkColumn(const size_t &row, const size_t &col) const {
@@ -71,8 +76,8 @@ bool Sudoku::checkColumn(const size_t &row, const size_t &col) const {
         return true;
     bool col_check[9]{};
     for (size_t i = 0; i < row + 1; i++) {
-        if (board_[i][col] == 0) continue;
-        col_check[board_[i][col] - 1] = true;
+        if (board_[(i * 9) + col] == 0) continue;
+        col_check[board_[(i * 9) + col] - 1] = true;
     }
     return std::accumulate(std::begin(col_check), std::end(col_check), 0) == row + 1;
 }
@@ -84,8 +89,8 @@ bool Sudoku::checkBox(const size_t &row, const size_t &col) const {
     bool box_check[9]{};
     for (size_t i = box_row * 3; i < (box_row * 3) + 3; i++) {
         for (size_t j = box_col * 3; j < (box_col * 3) + 3; j++) {
-            if (board_[i][j] == 0) continue;
-            box_check[board_[i][j] - 1] = true;
+            if (board_[(i * 9) + j] == 0) continue;
+            box_check[board_[(i * 9) + j] - 1] = true;
         }
     }
     const size_t box_vals = (3 * ((row % 3) + 1)) - (3 - ((col % 3) + 1));
@@ -94,9 +99,9 @@ bool Sudoku::checkBox(const size_t &row, const size_t &col) const {
 }
 
 void Sudoku::printBoard() const {
-    for (const auto &row: board_) {
-        for (auto col = 0; col < board_[0].size(); col++) {
-            std::cout << row[col] << " ";
+    for (auto row = 0; row < 9; row++) {
+        for (auto col = 0; col < 9; col++) {
+            std::cout << board_[(row * 9) + col] << " ";
         }
         std::cout << std::endl;
     }
