@@ -32,5 +32,5 @@ set_target_properties(sudoku_bench PROPERTIES
 
 # Set default build type to Release for the bench target if not specified
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+        set(CMAKE_BUILD_TYPE Release)
 endif()

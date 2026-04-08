@@ -23,6 +23,10 @@ public:
 
     bool rowState_[9]{};
 
+    bool columnState_[81]{};
+
+    bool boxState_[81]{};
+
     static bool check(const std::string &potentialSolution);
 
     void generate();
