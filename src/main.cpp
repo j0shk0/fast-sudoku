@@ -1,7 +1,7 @@
 #include "Sudoku.h"
 
 int main() {
-    Sudoku sudoku;
+    Sudoku sudoku{};
     sudoku.generate();
     sudoku.printBoard();
 }

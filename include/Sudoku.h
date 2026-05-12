@@ -1,37 +1,36 @@
-//
-// Created by j0shk0 on 01/04/2026.
-//
-
 #ifndef SUDOKU_SUDOKU_H
 #define SUDOKU_SUDOKU_H
 
-#include <string>
 #include <bitset>
-#include <array>
+#include <string>
 
 class Sudoku {
+  [[nodiscard]] bool checkRow(const size_t &row, const size_t &col);
 
-    [[nodiscard]] bool checkRow(const size_t &row, const size_t &col);
+  [[nodiscard]] bool checkColumn(const size_t &row, const size_t &col) const;
 
-    [[nodiscard]] bool checkColumn(const size_t &row, const size_t &col) const;
+  [[nodiscard]] bool checkBox(const size_t &row, const size_t &col) const;
 
-    [[nodiscard]] bool checkBox(const size_t &row, const size_t &col) const;
+  int board_[81]{};
 
-public:
+  bool rowState_[9]{};
 
-    int board_[81]{};
+  bool columnState_[81]{};
 
-    bool rowState_[9]{};
+  bool boxState_[81]{};
 
-    bool columnState_[81]{};
+ public:
+  Sudoku(int solution[81]);
 
-    bool boxState_[81]{};
+  Sudoku();
 
-    static bool check(const std::string &potentialSolution);
+  void generate();
 
-    void generate();
+  void printBoard() const;
 
-    void printBoard() const;
+  std::string getBoardString() const;
+
+  bool check();
 };
 
-#endif //SUDOKU_SUDOKU_H
+#endif  // SUDOKU_SUDOKU_H
