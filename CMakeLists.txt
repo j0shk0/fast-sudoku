@@ -3,6 +3,13 @@ project(sudoku)
 
 set(CMAKE_CXX_STANDARD 20)
 
+# This fixes the issue that Boost is not visible.
+# The new cmake search policy does not fall back to
+# cmake's own build-in FindBoost.cmake module.
+# The Nix boost package doesn't ship BoostConfig.cmake.
+# It relies on the old FindBoost.cmake approach.
+cmake_policy(SET CMP0167 OLD)
+
 # --- The Benchmark ---
 find_package(benchmark REQUIRED)
 find_package(Boost REQUIRED)

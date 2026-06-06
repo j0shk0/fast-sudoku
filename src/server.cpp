@@ -4,6 +4,7 @@
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
@@ -66,8 +67,16 @@ handle_request(  // NOLINT(*-use-anonymous-namespace)
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
     res.set(http::field::content_type, "text/plain");
     res.keep_alive(req.keep_alive());
+
+    auto const start = std::chrono::steady_clock::now();
     tmp_instance.generate();
-    res.body() = tmp_instance.getBoardString();
+    auto const end = std::chrono::steady_clock::now();
+    auto const elapsed_us =
+        std::chrono::duration_cast<std::chrono::microseconds>(end - start)
+            .count();
+
+    res.body() = "board=" + tmp_instance.getBoardString() +
+                 "&time_us=" + std::to_string(elapsed_us);
     res.prepare_payload();
     return res;
   };
@@ -103,7 +112,8 @@ handle_request(  // NOLINT(*-use-anonymous-namespace)
     res.set(http::field::content_type, "text/plain");
     res.keep_alive(req.keep_alive());
     Sudoku tmp_instance(solution.data());
-    res.body() = std::to_string(tmp_instance.check());
+    res.body() =
+        "board=" + board + "&valid=" + std::to_string(tmp_instance.check());
     res.prepare_payload();
     return res;
   }
@@ -114,7 +124,7 @@ handle_request(  // NOLINT(*-use-anonymous-namespace)
 //------------------------------------------------------------------------------
 
 // Report a failure
-static void fail( // NOLINT(*-use-anonymous-namespace)
+static void fail(                 // NOLINT(*-use-anonymous-namespace)
     const beast::error_code& ec,  // NOLINT(*-use-anonymous-namespace)
     char const* what) {           // NOLINT(*-use-anonymous-namespace)
   std::cerr << what << ": " << ec.message() << "\n";

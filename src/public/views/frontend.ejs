@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sudoku</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="index.js" defer></script>
+</head>
+<body>
+<div class="app">
+    <p class="info">Generation Speed: <span id="generation-time"><%= time %></span> μs</p>
+    <p class="too-small">Size matters and your screen is too small...</p>
+        <div class="sudoku">
+              <% for (let i = 0; i < numbers.length; i++) { %>
+                  <div class="<%= numbers[i] !== '0' ? 'cell' : 'cell mutable' %>"><%= numbers[i] === '0' ? '' : numbers[i] %></div>
+              <% } %>
+        </div>
+    <div class="picker-row">
+        <span class="picker-hint">select a cell and click here to insert a number --> </span>
+        <div class="number-picker">
+            <div class="picker-cell">1</div>
+            <div class="picker-cell">2</div>
+            <div class="picker-cell">3</div>
+            <div class="picker-cell">4</div>
+            <div class="picker-cell">5</div>
+            <div class="picker-cell">6</div>
+            <div class="picker-cell">7</div>
+            <div class="picker-cell">8</div>
+            <div class="picker-cell">9</div>
+        </div>
+    </div>
+    <button id="check-sudoku" class="check-btn">Check Sudoku</button>
+</div>
+</body>
+</html>

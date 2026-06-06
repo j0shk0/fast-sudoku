@@ -129,6 +129,33 @@ body {
     background-color: #333;
 }
 
+.check-btn {
+    width: min(450px, 95vw);
+    margin-top: 20px;
+    padding: 12px 0;
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+    font-size: 16px;
+    color: white;
+    background-color: transparent;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.check-btn:hover {
+    background-color: #333;
+}
+
+.check-btn.valid {
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.check-btn.invalid {
+    border-color: #f44336;
+    color: #f44336;
+}
+
 @media (max-width: 1300px) {
     .picker-hint {
         display: none;
