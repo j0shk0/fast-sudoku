@@ -47,5 +47,13 @@
       npm install ejs
       '';
       };
+
+      packages.${system}.server = pkgs.stdenv.mkDerivation {
+        pname = "sudoku-server";
+        version = "1.0";
+        src = ./.;
+        nativeBuildInputs = with pkgs; [ cmake ninja pkg-config ];
+        buildInputs       = with pkgs; [ boost gbenchmark ];
+      };
     };
 }

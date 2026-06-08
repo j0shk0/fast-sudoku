@@ -25,6 +25,10 @@ add_executable(server
         src/Sudoku.cpp
 )
 
+# This is necessary for nix derivation to work.
+# Binary will be in ./result/bin
+install(TARGETS server RUNTIME DESTINATION bin)
+
 # Link the benchmark library and include dir
 target_link_libraries(sudoku_bench PRIVATE benchmark::benchmark)
 target_include_directories(sudoku_bench PRIVATE include)
